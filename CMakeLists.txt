@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(orb_slam3_ros_wrapper)
 
-# Change this to your installation of ORB-SLAM3. Default is ~/
+# Change this to your installation of ORB-SLAM3. Default is ~/visual_slam/ORB_SLAM3
 set(ORB_SLAM3_DIR
    $ENV{HOME}/visual_slam/ORB_SLAM3
 )
