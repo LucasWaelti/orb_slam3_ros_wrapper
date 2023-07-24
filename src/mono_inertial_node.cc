@@ -5,6 +5,7 @@
 */
 
 #include "common.h"
+#include "ros/package.h"
 
 using namespace std;
 
@@ -48,9 +49,10 @@ int main(int argc, char **argv)
     std::string node_name = ros::this_node::getName();
     image_transport::ImageTransport image_transport(node_handler);
 
-    std::string voc_file, settings_file;
+    std::string voc_file, settings_file, save_dir;
     node_handler.param<std::string>(node_name + "/voc_file", voc_file, "file_not_set");
     node_handler.param<std::string>(node_name + "/settings_file", settings_file, "file_not_set");
+    node_handler.param<std::string>(node_name + "/save_dir", save_dir, "");
 
     if (voc_file == "file_not_set" || settings_file == "file_not_set")
     {
@@ -80,6 +82,13 @@ int main(int argc, char **argv)
     std::thread sync_thread(&ImageGrabber::SyncWithImu, &igb);
 
     ros::spin();
+
+    // Save trajectory
+    if (save_dir != "") {
+        std::string save_path = ros::package::getPath("vio_evaluation") + "/results/" + save_dir + "/raw_trajectory.txt";
+        SLAM.SaveTrajectoryEuRoC(save_path);
+        ROS_WARN("Trajectory saved successfully to ", save_path);
+    }
 
     // Stop all threads
     SLAM.Shutdown();
